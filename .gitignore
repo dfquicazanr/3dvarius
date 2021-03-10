@@ -1,0 +1,5 @@
+*.dat
+*.out
+*.exe
+.idea/
+cmake-build-debug/
