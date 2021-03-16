@@ -46,7 +46,7 @@ LatticeBoltzmann::LatticeBoltzmann(void) {
   // Load weights
   w[0] = W0;
   w[1] = w[2] = w[3] = w[4] = (1.0 - W0) / 4.0;
-  // Load speed vectors
+  // Load velocity vectors
   // v_0          v_1             v_2             v_3             v_4
   v[0][0] = 0;    v[0][1] = 1;    v[0][2] = 0;    v[0][3] = -1;   v[0][4] = 0;    //v_x
   v[1][0] = 0;    v[1][1] = 0;    v[1][2] = 1;    v[1][3] = 0;    v[1][4] = -1;   //v_y
@@ -60,33 +60,16 @@ double LatticeBoltzmann::rho(int ix, int iy, bool useNew = false) {
   return sum;
 }
 
-//Vector2D LatticeBoltzmann::j(int ix, int iy, bool useNew = false) {
-//  Vector2D sum;
-//  sum.x = 0.0;
-//  sum.y = 0.0;
-//  for (int i = 0; i < Q; i++) {
-//    sum.x += useNew ? v[0][i] * fNew[ix][iy][i] : v[0][i] * f[ix][iy][i];
-//    sum.y += useNew ? v[1][i] * fNew[ix][iy][i] : v[1][i] * f[ix][iy][i];
-//  }
-//  return sum;
-//}
-
 Vector2D LatticeBoltzmann::j(int ix, int iy, bool useNew = false) {
   Vector2D sum;
   sum.x = 0.0;
   sum.y = 0.0;
   for (int i = 0; i < Q; i++) {
-    if (useNew) {
-      sum.x += v[0][i] * fNew[ix][iy][i];
-      sum.y += v[1][i] * fNew[ix][iy][i];
-    } else {
-      sum.x += v[0][i] * f[ix][iy][i];
-      sum.y += v[1][i] * f[ix][iy][i];
-    }
+    sum.x += useNew ? v[0][i] * fNew[ix][iy][i] : v[0][i] * f[ix][iy][i];
+    sum.y += useNew ? v[1][i] * fNew[ix][iy][i] : v[1][i] * f[ix][iy][i];
   }
   return sum;
 }
-
 
 double LatticeBoltzmann::fEquilibrium(double rhoValue, Vector2D jValue, int i) {
   return i == 0 ?
@@ -119,6 +102,17 @@ void LatticeBoltzmann::collide(void) {
   }
 }
 
+void LatticeBoltzmann::imposeField(int t) {
+  int ix = Lx / 2, iy = Ly / 2;
+  double waveLength = 10.0;
+  double omega = 2.0 * M_PI * c / waveLength;
+  double rho0 = 10.0 * sin(omega * t);
+  Vector2D j0 = j(ix,iy);
+  for(int i = 0; i < Q; i++) {
+    fNew[ix][iy][i] = fEquilibrium(rho0, j0, i);
+  }
+}
+
 void LatticeBoltzmann::advection(void ) {
   for (int ix = 0; ix < Lx; ix++) {
     for (int iy = 0; iy < Ly; iy++) {
@@ -128,17 +122,6 @@ void LatticeBoltzmann::advection(void ) {
         f[nextIx][nextIy][i] = fNew[ix][iy][i];
       }
     }
-  }
-}
-
-void LatticeBoltzmann::imposeField(int t) {
-  int ix = Lx / 2, iy = Ly / 2;
-  double waveLength = 10.0;
-  double omega = 2.0 * M_PI * c / waveLength;
-  double rho0 = 10.0 * sin(omega * t);
-  Vector2D j0 = j(ix,iy);
-  for(int i = 0; i < Q; i++) {
-    fNew[ix][iy][i] = fEquilibrium(rho0, j0, i);
   }
 }
 
