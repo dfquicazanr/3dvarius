@@ -47,7 +47,7 @@ public:
 LatticeBoltzmann::LatticeBoltzmann(void) {
   // Load weights
   w[0] = W0;
-  w[1] = w[2] = w[3] = w[4] = (1.0 - W0) / 4.0;
+  w[1] = w[2] = w[3] = w[4] = w[5] = w[6]= 1.0 / 8.0;
   // Load velocity vectors
   // v_0          v_1             v_2             v_3             v_4             v_5             v_6
   v[0][0] = 0;    v[0][1] = 1;    v[0][2] = 0;    v[0][3] = 0;    v[0][4] = -1;   v[0][5] = 0;    v[0][6] = 0;   //v_x
@@ -113,7 +113,7 @@ void LatticeBoltzmann::collide(void) {
 
 void LatticeBoltzmann::imposeField(int t) {
   int ix = Lx / 2, iy = Ly / 2, iz = Lz / 2;
-  double waveLength = 10.0;
+  double waveLength = 7.0;
   double omega = 2.0 * M_PI * c / waveLength;
   double rho0 = 10.0 * sin(omega * t);
   Vector3D j0 = j(ix, iy, iz);
@@ -158,7 +158,7 @@ int main(void) {
   j0.x = 0.0;
   j0.y = 0.0;
   j0.z = 0.0;
-  int tMax = 100;
+  int tMax = 1000;
 
   waves.init(rho0, j0);
   for (int t = 0; t < tMax; ++t) {
