@@ -158,7 +158,7 @@ int main(void) {
   j0.x = 0.0;
   j0.y = 0.0;
   j0.z = 0.0;
-  int tMax = 1000;
+  int tMax = 200;
 
   waves.init(rho0, j0);
   for (int t = 0; t < tMax; ++t) {

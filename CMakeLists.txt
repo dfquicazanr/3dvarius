@@ -3,4 +3,4 @@ project(violin_boltzman)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(violin_boltzman LatticeBoltzmann2D.cpp LatticeBoltzmann.cpp LatticeBoltzmann3D.cpp)
+add_executable(violin_boltzman LatticeBoltzmann2D.cpp LatticeBoltzmann.cpp LatticeBoltzmann3D.cpp LatticeBoltzmannCylidrical.cpp Geometry2D.cpp)
